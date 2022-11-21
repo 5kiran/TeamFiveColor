@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>myPage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/static/black.css">
+
+</head>
+
+<body>
+    <section>
+        <div class="progressBar"></div>
+        <h2>Black</h2>
+        <h6 style="color: white; text-align: right;">miniproject</h6>
+        <hr class="top__line">
+        </hr>
+        <div class="top__text">
+            <h2>저를 소개합니다...</h2>
+        </div>
+        <div class="top">
+            <div class="image">
+                <p>
+                    김연수(NODE 4기)
+                </p>
+            </div>
+            <div class="introduce">
+                <p>저는 김연수입니다.</p>
+            </div>
+        </div>
+        <hr class="top__line">
+        </hr>
+        <div class="top__text">
+            <h2>저의 강점은!</h2>
+        </div>
+        <div class="middle">
+            <div class="strength">
+                <p>객관적으로 살펴본 나의 장점</p>
+            </div>
+        </div>
+        <hr class="top__line">
+        </hr>
+        <div class="top__text">
+            <h2>협업 Style</h2>
+        </div>
+        <div class="middle">
+            <div class="style">
+                <p>협업할 때 나의 스타일</p>
+            </div>
+        </div>
+        <hr class="top__line">
+        </hr>
+        <div class="top__text">
+            <h2>MBTI</h2>
+        </div>
+        <div class="middle">
+            <div class="mbti">
+                <p>INFP</p>
+            </div>
+            <div class="mbti_describe">
+                <p>mbti 설명</p>
+            </div>
+        </div>
+        <hr class="top__line">
+        </hr>
+        <div class="top__text">
+            <h2>글 남겨주세요..</h2>
+        </div>
+
+
+
+        <div class="order-info">
+            <div class="input-group mb-3">
+                <span class="input-group-text">이름</span>
+                <input id="name" type="text" class="form-control">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">내용</span>
+                <input id="comment" type="text" class="form-control">
+            </div>
+            <button onclick="no_Comment()" type="button" class="btn btn-outline-secondary">댓글쓰기</button>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr style="color: white;">
+                    <td scope="col">번호</td>
+                    <td scope="col">이름</td>
+                    <td scope="col">내용</td>
+                    <td scope="col">삭제</td>
+                    <td scope="col">수정</td>
+                    <!-- <td scope="col"></td> -->
+                </tr>
+            </thead>
+            <tbody id="order-box" style="color:white;">
+            </tbody>
+
+        </table>
+
+        <div class="todo_update">
+            <button onclick="save_comment()" type="button" class="btn btn-outline-primary">완료</button>
+        </div>
+        <div class=" down">
+            <div class="sns">
+                <a href="https://velog.io/@kisyam" target="_blank">
+                    <img class="velog"
+                        src="https://velog.velcdn.com/images/velog/profile/9aa07f66-5fcd-41f4-84f2-91d73afcec28/green%20favicon.png"
+                        style="width:30px;height:30px;">
+                    </img>
+                </a>
+                <a href="https://www.instagram.com/sqjiyangpro/" target="_blank">
+                    <img class="insta"
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/2048px-Instagram_icon.png"
+                        style="width:30px;height:30px;">
+                    </img>
+                </a>
+                <a href="https://github.com/kisyam" target="_blank">
+                    <img class="github" src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                        style="width:30px;height:30px;">
+                    </img>
+                </a>
+            </div>
+        </div>
+        <hr class="top__line">
+        </hr>
+
+        <a href="main.html" class="bottom">메인 페이지 가기</a>
+    </section>
+</body>
+
+<script>
+    const progressBar = document.querySelector('.progressBar');
+    const section = document.querySelector('section');
+
+    const scrollProgressBar = () => {
+        let scrollDistance = -(section.getBoundingClientRect().top);
+        let progressPercentage =
+            (scrollDistance /
+                (section.getBoundingClientRect().height -
+                    document.documentElement.clientHeight)) * 100;
+        let val = Math.floor(progressPercentage);
+        progressBar.style.width = val + '%';
+        console.log(val);
+        if (val < 0) {
+            progressBar.style.width = '0%';
+        } else if (val >= 99) {
+            progressBar.style.width = '100%';
+        }
+    };
+
+    window.addEventListener('scroll', scrollProgressBar);
+</script>
+<script>
+    let getName = document.querySelector("name");
+    let comment = document.querySelector("comment");
+
+    $(document).ready(function () {
+        show_comment();
+        $('.todo_update').hide();
+    });
+
+    function no_Comment() {
+        let name = $('#name').val();
+        let comment = $('#comment').val();
+        if (name == '') {
+            alert("이름을 입력하세요");
+        } else if (comment == '') {
+            alert("내용을 입력하세요");
+        }
+        else {
+            save_comment();
+        }
+    }
+
+    function update_comment(num) {
+
+
+        $('.todo_update').show();
+        let name = document.querySelector("name");
+        let comment = document.querySelector("comment");
+
+        $.ajax({
+            type: "POST",
+            url: "/color5/update",
+            data: { num_give: num, name_give: name, comment_give: comment },
+            success: function (response) {
+                alert(response["msg"]);
+                window.location.reload();
+            }
+        });
+    }
+
+
+
+    function deleteComment(num) {
+        console.log(num);
+        $.ajax({
+            type: "POST",
+            url: "/color5/delete",
+            data: { num_give: num },
+            success: function (response) {
+                alert(response["msg"])
+                window.location.reload()
+            }
+        });
+    }
+
+    function show_comment() {
+        $.ajax({
+            type: 'GET',
+            url: '/color5',
+            data: {},
+            success: function (response) {
+                let rows = response['orders'];
+                for (let i = 0; i < rows.length; i++) {
+                    let num = rows[i]['num'];
+                    let name = rows[i]['name'];
+                    let comment = rows[i]['comment'];
+                    let temp_html =
+                        `<tr>
+                        <td>${num}</td>
+                        <td>${name}</td>
+                        <td>${comment}</td>
+                        <td><button onclick="deleteComment(${num})" type="button" class="btn btn-outline-secondary btn-sm">댓글삭제</button></td>
+                        <td><button onclick="update_comment(${num})" type="button" class="btn btn-outline-secondary btn-sm">댓글수정</button></td>
+                            </tr>`;
+                    $('#order-box').append(temp_html);
+                }
+            }
+        });
+    }
+
+    function save_comment() {
+        let name = $('#name').val();
+        let comment = $('#comment').val();
+        $.ajax({
+            type: 'POST',
+            url: '/color5',
+            data: { name_give: name, comment_give: comment, },
+            success: function (response) {
+                alert(response['msg']);
+                window.location.reload();
+            }
+        });
+    }
+</script>
+
+</body>
+
+
+</html>

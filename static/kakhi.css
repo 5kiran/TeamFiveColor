@@ -1,0 +1,230 @@
+
+body {
+    background-image: url("/static/image/캐러비안.png");
+    background-position: center;
+    background-size: cover;
+}
+
+.frame {
+    margin: 30px 150px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/*navigator*/
+
+.navigator {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+.site-name {
+    margin: 0px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    color: #331B3F;
+}
+
+.nav-menu {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+a:hover {
+    color: white;
+    transition: 0.3s;
+}
+
+/*profile-section*/
+
+.profile-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+
+    margin: 100px 100px;
+    color: #262223;
+}
+
+
+#profile-picture {
+    width: 400px;
+    margin-right: 60px;
+}
+
+.introduction > h2 {
+    margin: 5px;
+    font-family: 'Montserrat', cursive;
+    font-size: 40px;
+    font-weight: 700;
+
+}
+
+.introduction > p {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+
+    margin-bottom: 40px;
+}
+
+#capability {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    font-style: italic;
+
+    line-height: 30px;
+}
+
+
+/*value section*/
+
+.value-menu {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 40px;
+    margin: 20px 100px;
+    font-weight: 700;
+}
+
+.value-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 50px 200px;
+    margin-top: 20px;
+
+}
+
+.value {
+    display: flex;
+    flex-direction: row;
+    margin: 5px 45px;
+    align-items: center;
+
+}
+
+.value-icon {
+    width: 100px;
+    height: 100px;
+
+    border: 2.5px solid #FCEDDA;
+    border-radius: 100px;
+    padding: 15px;
+}
+
+.value-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bolder;
+    font-size: 30px;
+    margin: 0px 20px;
+}
+
+/* MBTI & 협업*/
+.collar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    color: #FCF6F5;
+    background-color: #7b9acc;
+    border-radius: 200px;
+    margin: 50px
+}
+
+.mbti {
+    width: 700px;
+    height: 500px;
+}
+
+.mbti-body {
+    text-align: center;
+
+}
+
+.mbti-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 40px;
+    margin: 20px
+}
+
+.mbti-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 25px;
+}
+
+.card-img-bottom {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin: auto;
+    padding: 15px 200px;
+
+    width: 700px;
+    height: 300px;
+}
+
+/* 블로그 sns */
+
+.footer {
+    text-align: center;
+}
+
+.contact {
+    font-style: oblique;
+}
+
+/* 방명록 */
+
+.guest {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    margin-top: 30px;
+}
+
+.mypost {
+    max-width: 500px;
+    width: 95%;
+    box-shadow: 0px 0px 3px 0px gray;
+    padding: 40px;
+    background-image: url("/static/image/색조합(핑크).png");
+    background-position: center;
+}
+.mybtn {
+    margin-top: 20px;
+}
+
+.mycards {
+    max-width: 600px;
+    width: 95%;
+    padding: 10px;
+    background-color: #333D79;
+
+}
+
+.mycards > .card {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background-color: #FAEBEF;
+}
+.buton {
+    padding: 10px 22px;
+    margin-left: 450px;
+}
+

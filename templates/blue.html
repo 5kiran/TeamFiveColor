@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <title>오색조 파란색 자기 소개</title>
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-image: url("https://ifh.cc/g/2cDXg4.jpg");
+        }
+
+        header {
+            padding: 30px;
+            text-align: center;
+            font-size: 35px;
+            color: white;
+        }
+
+        nav {
+            float: left;
+            width: 30%;
+            height: 300px;
+            padding: 20px;
+            color: white;
+        }
+
+        .img {
+            width: 30%;
+            width: 200px;
+            margin: 10px 10px 10px 10px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        article {
+            float: left;
+            padding: 20px;
+            width: 70%;
+            height: 300px;
+            color: white;
+        }
+
+        section::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+
+        footer {
+            padding: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .table {
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            nav, article {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+
+<script>
+    $(document).ready(function () {
+        show_order();
+    });
+
+    function show_order() {
+        $.ajax({
+            type: 'GET',
+            url: '/parc',
+            data: {},
+            success: function (response) {
+                let rows = response ['comments']
+                for (let i = 0; i < rows.length; i++) {
+                    let comment = rows[i]['comment']
+                    let num = rows[i]['num']
+                    let name = rows[i]['name']
+                    let edit = rows[i]['edit']
+
+                    let temp_html = ``
+                    if (edit == 0 || edit == 1 ){
+                        temp_html = `<tr>
+                                     <td>${name}</td>
+                                     <td>${comment}</td>
+                                     <td><button onclick="save_del(${num})" type="button" class="btn btn-warning mybtn"> 삭제 </button></td>
+                                     <td><button onclick="edit_comment(${num})" type="button" class="btn btn-warning mybtn"> 수정 </button></td>
+                                     </tr>`
+                    } else {
+                        temp_html = `<tr>
+                                     <td>${name}</td>
+                                     <td>${comment}</td>
+                                     <td><button onclick="save_del(${num})" type="button" class="btn btn-warning mybtn"> 삭제 </button></td>
+                                     <td><input type="text" id="edit_comment" value="${comment}"></td>
+                                     <td><button onclick="edit_comment_done(${num})" type="button" class="btn btn-warning mybtn"> 수정완료 </button></td>
+                                     </tr>`
+                    }
+                    $('#comment-box').append(temp_html)
+                }
+            }
+        });
+    }
+
+    function save_order() {
+        let name = $('#name').val()
+        let comment = $('#comment').val()
+
+        $.ajax({
+            type: 'POST',
+            url: '/parc',
+            data: {name_give: name, comment_give: comment},
+            success: function (response) {
+                alert(response['msg'])
+                window.location.reload()
+            }
+        });
+    }
+
+    function save_del(num) {
+        $.ajax({
+            type: "POST",
+            url: "/parc/del",
+            data: {'num_give': num},
+            success: function (response) {
+                alert(response["msg"])
+                window.location.reload()
+            }
+        });
+    }
+    function edit_comment (num) {
+        $.ajax({
+            type: "POST",
+            url: "/parc/edit",
+            data: {'num_give': num},
+            success: function (response) {
+                alert(response["msg"])
+                window.location.reload()
+            }
+        });
+    }
+
+    function edit_comment_done (num) {
+        let edit_comment = $('#edit_comment').val()
+        $.ajax({
+            type: "POST",
+            url: "/parc/edit_done",
+            data: {'num_give':num, edit_comment_receive_give: edit_comment},
+            success: function (response) {
+                alert(response["msg"])
+                window.location.reload()
+            }
+        });
+    }
+
+</script>
+
+<body>
+<header>
+    <h2>Node.js 오색조(7조) 파란색 정대신</h2>
+</header>
+<section>
+    <nav>
+        <img class="img" src="https://ifh.cc/g/cO82x8.jpg">
+    </nav>
+    <article>
+        <h2>Node.js 오색조(7조) 파란색 정대신입니다</h2>
+        <p>내일배움캠프를 통해 팀원들과 소통하며 나 자신을 레벨 업할수 있는</p>
+        <p>좋은 기회라 생각하고 좋은 개발자를 향해 열심히 달려가도록 하겠습니다.!!</p>
+    </article>
+</section>
+
+<footer>
+    <h3>객관적으로 살펴본 자신의 장점</h3>
+    <h4>-끈기있게 해내갈수 있는 근성</h4>
+</footer>
+
+<footer>
+    <h3>협업을 하는 과정에서 자신의 스타일</h3>
+    <h4>-최대한 다른 사람의 의견을 잘 듣고 수렴하는 스타일</h4>
+</footer>
+
+<section>
+    <nav>
+        <h1>MBTI</h1>
+        <h2>->INFP</h2>
+    </nav>
+    <article>
+        <h1>INFP 특징</h1>
+        <h3>이해심이 많고 적응력이 좋으며,대체로 관대하고 개방적이다.</h3>
+        <h3>타인의 정서를 잘 이해하고 원만한 관계를 맺는다.</h3>
+    </article>
+</section>
+
+<footer>
+    <h2>개발 블로그 및 SNS</h2>
+    <a href="https://test0066.tistory.com/"> 겜 을 좋아하고 개발자가 되고 싶은 사람</a>
+</footer>
+
+<section>
+    <nav>
+        <h1>방명록</h1>
+    </nav>
+    <article>
+        <div class="from">
+            <input type="name" class="form-control" id="name" placeholder="닉네임">
+            <br>
+            <input type="comment" class="form-control" id="comment" placeholder="방명록">
+            <br>
+            <button onclick="save_order()" type="button" class="btn btn-warning mybtn"> 등록하기</button>
+        </div>
+    </article>
+</section>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">닉네임</th>
+        <th scope="col">방명록</th>
+        <th scope="col">삭제</th>
+        <th scope="col">수정</th>
+    </tr>
+    <tbody id="comment-box"></tbody>
+    </thead>
+
+</table>
+</body>
+</html>

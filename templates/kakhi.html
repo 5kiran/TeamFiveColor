@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <title>HOJUNs INFO</title>
+
+    <link rel="stylesheet" type="text/css" href="../static/kakhi.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,400;0,500;0,600;0,800;0,900;1,200;1,400;1,500;1,600;1,800;1,900&display=swap"
+          rel="stylesheet">
+
+    <script>
+        $(document).ready(function () {
+            show_order();
+        });
+
+        function show_order() {
+            $.ajax({
+                type: 'GET',
+                url: '/kakhi_cmt',
+                data: {},
+                success: function (response) {
+                    let rows = response['nicks']
+                    for (let i = 0; rows.length; i++) {
+                        let nick = rows[i]['nick']
+                        let comment = rows[i]['comment']
+                        let num = rows[i]['num']
+                        let edit = rows[i]['edit']
+
+                        let temp_html = ``
+
+                        if (edit == 0 || edit == 1) {
+                            temp_html = `<div class="card">
+                                            <div class="card-body" id="minibox">
+                                                <blockquote class="blockquote mb-0">
+                                                    <p>${comment}</p>
+                                                    <footer class="blockquote-footer">${nick}
+                                                    </footer>
+                                                    <button onclick="delete_comment(${num})" type="button" class="btn btn-info">삭제하기</button>
+                                                     <button onclick="edit_comment(${num})" type="button" class="btn btn-info">수정하기</button>
+                                                </blockquote>
+                                            </div>
+                                        </div>`
+                        } else {
+                            temp_html = `<div class="card">
+                                            <div class="card-body" id="minibox">
+                                                <blockquote class="blockquote mb-0">
+                                                    <p><input type="text" id="edit" value="${comment}"></p>
+                                                    <button onclick="edit_clear(${num})"  class = "buton">완료</button>
+                                                    <footer class="blockquote-footer">${nick}
+                                                    </footer>
+                                                </blockquote>
+                                            </div>
+                                        </div>`
+                        }
+                        $('#nick-box').append(temp_html)
+                    }
+                }
+            });
+        }
+
+        function save_comment() {
+            let nick = $('#nick').val()
+            let comment = $('#comment').val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/kakhi_cmt',
+                data: {nick_give: nick, comment_give: comment},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            });
+        }
+
+
+        function delete_comment(num) {
+            console.log()
+            $.ajax({
+                type: 'POST',
+                url: '/kakhi_cmt/del',
+                data: {num_give: num},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            });
+        }
+
+        //////////////////////////////수정하기///////////////////////////////////////////////////
+        function edit_comment(num) {
+            console.log()
+            $.ajax({
+                type: 'POST',
+                url: '/kakhi_cmt/edit',
+                data: {num_give: num},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            });
+        }
+
+        /////////////////////////수정창//////////////////////////////
+        function edit_clear(num) {
+            let edit = $('#edit').val()
+            console.log()
+            $.ajax({
+                type: 'POST',
+                url: '/kakhi_cmt/clear',
+                data: {num_give: num, edit_give: edit},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            });
+        }
+
+    </script>
+
+</head>
+<body>
+
+<div class="frame">
+
+    <nav class="navigator">
+        <h3 class="site-name">HO JUN'S HOMEPAGE</h3>
+        <a class="nav-menu" href="localhost:5000/?">메인 페이지로</a>
+    </nav>
+
+
+    <div class="profile-section">
+        <img id="profile-picture" src="/static/image/정호준.jpg">
+        <div class="introduction">
+            <h2>저는요</h2>
+            <p>"끊임없이 발전해 나가는 개발자를 꿈꾸는 학생"<br>생명공학과 출신으로 코딩이 아직은 매우 어렵지만 흥미를 점점 느껴가는 중입니다. 다른 사람들과 정보를 공유하고 토론을 하는것을
+                좋아합니다. 모두 캠프 기간동안 잘 지내봐요! </p>
+            <h2>내가 배운 것은?</h2>
+            <p id="capability">웹개발 종합 기초<br>SQL 기초<br>Java Script 기초</p>
+        </div>
+    </div>
+
+    <h5 class="value-menu">나의 장점은?</h5>
+
+    <div class="value-section">
+
+        <div class="value">
+            <img class="value-icon" src="/static/image/악수.png">
+            <h4 class="value-name">협력성</h4>
+        </div>
+
+        <div class="value">
+            <img class="value-icon" src="/static/image/탐구.png">
+            <h4 class="value-name">탐구정신</h4>
+        </div>
+
+        <div class="value">
+            <img class="value-icon" src="/static/image/웃는얼굴.png">
+            <h4 class="value-name">온화한 성품</h4>
+        </div>
+    </div>
+
+
+    <div class="collar">
+        <div class="mbti">
+            <div class="mbti-body">
+                <h5 class="mbti-title">나의 협업 스타일</h5>
+                <p class="mbti-text">상대의 말을 잘 들어주고 화합하려 한다.</p>
+            </div>
+            <img src="/static/image/협업.jpg" class="card-img-bottom" alt="...">
+        </div>
+
+        <div class="mbti">
+            <div class="mbti-body">
+                <h5 class="mbti-title">나의 MBTI</h5>
+                <p class="mbti-text">INTP이며 흥미있는 주제를 깊게 파고든다.</p>
+            </div>
+            <img src="/static/image/INTP.jpg" class="card-img-bottom" alt="...">
+        </div>
+
+    </div>
+
+
+    <footer class="footer">
+        <h3 class="contact">CONTACT ME</h3>
+        <a class="velog" href="https://velog.io/@killerwhale-94" target="_blank">
+            <img src="/static/image/velog.png" width="50px" height="50px" alt="벨로그"/></a>
+    </footer>
+
+    <div class="guest">
+        <div class="mypost">
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="nick" placeholder="name@example.com">
+                <label for="floatingInput">닉네임</label>
+            </div>
+            <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="comment"
+                      style="height: 100px"></textarea>
+                <label for="floatingTextarea2">내용</label>
+            </div>
+            <div class="mybtn">
+                <button onclick="save_comment()" type="button" class="btn btn-dark">작성</button>
+            </div>
+        </div>
+
+        <div class="mycards" id="nick-box">
+
+        </div>
+    </div>
+
+</body>
+</html>

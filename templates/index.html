@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <title>오색조's 미니 프로젝트</title>
+
+    <style>
+        .boxbox{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .name {
+            width: 100%;
+            height: 300px;
+
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../static/image/backscreen.png');
+            background-position: center;
+            background-size: cover;
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .name > h1 {
+            font-size: 30px;
+        }
+
+        .introduce {
+            width: 1200px;
+
+            margin: auto;
+
+        }
+        .row {
+            margin-top: 20px;
+            padding-bottom: 50px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .visualYellow {
+            cursor: pointer;
+        }
+
+        .visualYellow:hover {
+            box-shadow: 0px 0px 10px 10px #F2B84B;
+            border-radius: 10px;
+            transition: all 0.7s linear;
+            transform: scale(1.3);
+        }
+        .visualOrange {
+            cursor: pointer;
+        }
+        .visualOrange:hover{
+            box-shadow: 0px 0px 10px 10px darkorange;
+            border-radius: 10px;
+            transition: all 0.7s linear;
+            transform: scale(1.3);
+        }
+        .visualKakhi {
+            cursor: pointer;
+        }
+        .visualKakhi:hover{
+            box-shadow: 0px 0px 10px 10px darkolivegreen;
+            border-radius: 10px;
+            transition: all 0.7s linear;
+            transform: scale(1.3);
+        }
+        .visualBlue {
+            cursor: pointer;
+        }
+        .visualBlue:hover {
+            box-shadow: 0px 0px 10px 10px blue;
+            border-radius: 10px;
+            transition: all 0.7s linear;
+            transform: scale(1.3);
+        }
+        .visualBlack {
+            cursor: pointer;
+        }
+        .visualBlack:hover{
+            box-shadow: 0px 0px 10px 10px black;
+            border-radius: 10px;
+            transition: all 0.7s linear;
+            transform: scale(1.3);
+        }
+        #fiveColor {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            grid-gap: 10px 10px;
+        }
+
+        .guest-border {
+            width: 95%;
+            max-width: 1000px;
+
+            padding: 20px 20px 20px 20px;
+            margin: 15px 15px 15px 15px;
+
+            --borderWidth: 8px;
+            background: ivory;
+            position: relative;
+            border-radius: var(--borderWidth);
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .guest-border:after {
+            content: '';
+            position: absolute;
+            top: calc(-1 * var(--borderWidth));
+            left: calc(-1 * var(--borderWidth));
+            height: calc(100% + var(--borderWidth) * 2);
+            width: calc(100% + var(--borderWidth) * 2);
+            background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+            border-radius: calc(1.5 * var(--borderWidth));
+            z-index: -1;
+            animation: animatedgradient 2s ease alternate infinite;
+            background-size: 300% 300%;
+        }
+
+        #gusetbox {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            grid-gap: 10px 10px;
+
+        }
+        .commentbox {
+            max-width: 800px;
+            width: 600px;
+            padding: 10px 50px 10px 50px;
+            margin: 10px 0px 10px 0px;
+
+            border-radius: 5px;
+            border: solid black 3px;
+            background-color: white;
+        }
+        .commentbox:after {
+            content: '';
+            position: absolute;
+            top: calc(-1 * var(--borderWidth));
+            left: calc(-1 * var(--borderWidth));
+            height: calc(100% + var(--borderWidth) * 2);
+            width: calc(100% + var(--borderWidth) * 2);
+            background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+            border-radius: calc(1.5 * var(--borderWidth));
+            z-index: -1;
+            animation: animatedgradient 2s ease alternate infinite;
+            background-size: 300% 300%;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            show_comment();
+        });
+
+        function search_Member() {
+            let inputName = $('#memberName').val()
+
+            let getName
+            if (inputName === '') {
+                return alert('이름을 입력해주세요')
+            } else {
+                getName = inputName.trim()
+            }
+
+            $.ajax({
+                type: "GET",
+                url: `/searchMember?name_give=${getName}`,
+                data: {},
+                success: function (response) {
+                    let rows = response['members_Data']
+
+                    console.log(rows)
+
+
+                    if (rows === undefined) {
+                        return alert(`${getName}님은 오색조가 아닙니다`)
+                    } else {
+                        let name = rows['name']
+                        let color = rows['color']
+                        let html = rows['html']
+
+                        alert(`${name}님은 오색조의 ${color}멤버 입니다`)
+                        if(confirm(`${name}님은 ${color}멤버입니다 페이지로 이동 하시겠습니까?`)){
+                            location.href = `${html}`
+                        }
+                        else {
+                            window.location.reload()
+                        }
+                    }
+                }
+            });
+        }
+        function show_comment() {
+            $.ajax({
+                type: 'GET',
+                url: '/main/getcomment',
+                data: {},
+                success: function (response) {
+                    let rows = response['comments']
+                    for(let i = 0; i < rows.length; i++){
+                        let name = rows[i]['name']
+                        let comment = rows[i]['comment']
+
+                        let temp_html = `<div class="commentbox">
+                                                <p>${comment}</p>
+                                                <footer class="blockquote-footer">${name}</footer>
+                                        </div>`
+                        $('#team-list').append(temp_html)
+                    }
+                }
+            });
+        }
+        function team_comment() {
+            let teamname = $('#teamname').val()
+            let teamcomment = $('#teamcomment').val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/main/postcomment',
+                data: { teamname_give : teamname,tmc_give : teamcomment},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            });
+        }
+
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">오색조 소개</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Dropdown
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </li>
+          </ul>
+          <div class="d-flex">
+            <input id="memberName" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button onclick="search_Member()" class="btn btn-outline-success" type="submit">Search</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="name">
+        <h1>오색조의 둥지</h1>
+    </div>
+
+    <div class="introduce">
+
+
+        <div class="row">
+            <div class="team">
+                <h5 class="card-header">팀명 소개</h5>
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text">다섯가지 색깔의 조화
+                        서로 다른 매력을 가진 5인이 만나 아름답게 어우러져 좋은 결과를 내겠다는 의미</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="goal">
+                <h5 class="card-header">우리 팀의 목표</h5>
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text">서로 부족한 부분을 보완해 함께 발전하고, 같이 결과물을 만드며 협업 능력 향상</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="promise">
+                <h5 class="card-header">우리팀의 약속</h5>
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text">이기적 마인드를 가지기 보단 서로 협력하기</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id = "fiveColor">
+            <div class="col-lg-2">
+                <a href="kakhi">
+                    <img class="visualKakhi" width="200" height="300" src="../static/green.jpg" alt="...">
+                </a>
+            </div>
+            <div class="col-lg-2">
+                <a href="blue">
+                    <img class="visualBlue" width="200" height="300" src="../static/blue.jpg" alt="...">
+                </a>
+            </div>
+
+            <div class="col-lg-2">
+                <a href= "black">
+                    <img class="visualBlack" width="200" height="300" src="../static/black1.jpg" alt="...">
+                </a>
+            </div>
+            <div class="col-lg-2">
+                <a href="orange">
+                    <img class="visualOrange" width="200" height="300" src="../static/king%20of%20orange.jpg" alt="주황색 자기소개">
+                </a>
+            </div>
+            <div class="col-lg-2">
+                <a href="yellow">
+                    <img class="visualYellow" width="200" height="300" src="../static/yellow.png" alt="yellow">
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="boxbox">
+        <div class ="guest-border">
+            <div id = "gusetbox">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="teamname" placeholder="nick"
+                           style="width: 200px">
+                    <label for="teamname">닉네임</label>
+                </div>
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="Leave a comment here" id="teamcomment"
+                              style="height: 105px"></textarea>
+                    <label for="teamcomment">내용을 입력하세요 (Warring : 삭제 불가)</label>
+                </div>
+            </div>
+            <button onclick= "team_comment()" type="button" class="btn btn-dark" style="margin-top: 10px"> 등록하기 </button>
+            <div id="team-list">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

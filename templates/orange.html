@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>orange</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="/static/orange.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Jua', sans-serif;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            show_comment();
+            show_boss()
+            show_bossKill()
+        });
+
+        function show_comment() {
+            $.ajax({
+                type: 'GET',
+                url: '/orange/show',
+                data: {},
+                success: function (response) {
+                    let rows = response['comments']
+                    for(let i = 0; i < rows.length; i++){
+                        let name = rows[i]['name']
+                        let comment = rows[i]['comment']
+                        let num = rows[i]['num']
+
+                        let temp_html = `<div id="${num}" class="commentbox">
+                                            <div>
+                                                <p>${comment}</p>
+                                                <footer class="blockquote-footer">${name}</footer>
+                                            </div>
+                                            <div>
+                                                <input type="password" class="form-control" placeholder="비밀번호">
+                                                <button onclick= "crt_comment(${num})" type="button" class="btn btn-dark"> 수정하기 </button>
+                                                <button onclick= "delete_comment(${num})" type="button" class="btn btn-dark"> 삭제하기 </button>
+                                            </div>
+                                        </div>`
+                        $('#comment-list').append(temp_html)
+                    }
+                }
+            });
+        }
+        function show_boss(){
+            $.ajax({
+                type: 'GET',
+                url: `/boss/hp`,
+                data: {},
+                success: function (response) {
+                    let hp = response['hp']
+                    let hpp = hp.toFixed(2)
+
+                    let temp_html = `어몽어스 HP 100/${hpp}`
+                        $('#bossHp').append(temp_html)
+                }
+            });
+        }
+
+        function show_bossKill(){
+            $.ajax({
+                type: 'GET',
+                url: `/boss/killlog`,
+                data: {},
+                success: function (response) {
+                    let rows = response['kill_list']
+
+
+                    for(let i = 0; i < rows.length; i++){
+                        let name = rows[i]['name']
+                        let count = rows[i]['killcount']
+                        let html = rows[i]['killhtml']
+
+                        let temp_html = `<p id = "bosslog">
+                                            <span style="color: blue"><a href="${html}" target="_blank">${name}</a></span> 님이 <span style="color: red">${count}</span> 번째로 어몽어스를 처치했습니다.
+                                        </p>`
+                        $('#bossloglist').append(temp_html)
+                    }
+                }
+            });
+        }
+
+        function crt_comment(num){
+            let correction = prompt("내용 입력");
+            let crtp = document.getElementById(num.toString()).querySelector("input").value
+
+            $.ajax({
+                type: "POST",
+                url: "/correction",
+                data: { correction_give :correction ,crtn_give : num, crtp_give : crtp},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function delete_comment(num){
+            let deletepw = document.getElementById(num.toString()).querySelector("input").value
+            $.ajax({
+                type: "POST",
+                url: "/orange/delete",
+                data: {deletepw_give:deletepw, num_give : num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function save_comment() {
+            let name = $('#name').val()
+            let comment = $('#comment').val()
+            let pw = $('#pw').val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/orange/save',
+                data: { name_give : name, comment_give : comment, pw_give : pw},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function skillDmg(callback) {
+            let randomDmg = Math.random() * 10
+            let dmg = randomDmg.toFixed(2)
+
+            callback(dmg)
+
+            $.ajax({
+                type: 'POST',
+                url: `/boss/dmg`,
+                data: {dmg_give : dmg},
+                success: function (response) {
+                    let row = response['boss_hp']
+                    console.log(row)
+                    if(row == undefined){
+                        let killcount = response['bosskill']
+                        let killname = prompt(`${killcount}번째로 어몽어스를 처치했습니다 이름을 입력하세요`)
+                        while (killname == ''){
+                            alert('이름을 입력하세요')
+                            killname = prompt(`${killcount}번째로 어몽어스를 처치했습니다 이름을 입력하세요`)
+                        }
+                        let killhtml = prompt('블로그 및 SNS 주소를 입력하세요')
+                        while (killhtml == ''){
+                            alert('주소를 입력하세요')
+                            killhtml = prompt('블로그 및 SNS 주소를 입력하세요')
+                        }
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/boss/kill',
+                            data: {name_give: killname , killnum_give : killcount, killhtml_give : killhtml},
+                            success: function (response) {
+                                alert(response['msg'])
+                                window.location.reload()
+                            }
+                        });
+
+                    }else {
+                        let bossHp = row['bossHp']
+                        alert(`보스체력이 ${bossHp} 만큼 남았습니다`)
+                        window.location.reload()
+                    }
+
+                }
+            });
+        }
+
+        function skillheal(callback) {
+            let randomHeal = Math.random() * 10
+            let heal = randomHeal.toFixed(2)
+
+            callback(heal)
+
+            $.ajax({
+                type: 'POST',
+                url: `/boss/heal`,
+                data: {heal_give : heal},
+                success: function (response) {
+                    let row = response['boss_hp']
+                    let bossHp = row['bossHp'].toFixed(2)
+                    alert(`보스체력이 ${bossHp} 만큼 남았습니다`)
+                    window.location.reload()
+                }
+            });
+        }
+
+        function icespear(dmg) {
+            if (dmg >= 8) {
+                alert('icespear가 ' + dmg + '의 크리티컬 데미지를 주었습니다')
+            } else {
+                alert('icespear가 ' + dmg + '의 데미지를 주었습니다')
+            }
+        }
+
+        function fireball(dmg) {
+            if (dmg >= 8) {
+                alert('fireball이 ' + dmg + '의 크리티컬 데미지를 주었습니다')
+            } else {
+                alert('fireball이 ' + dmg + '의 데미지를 주었습니다')
+            }
+        }
+
+        function thunderbolt(dmg) {
+            if (dmg >= 8) {
+                alert('thunderbolt가 ' + dmg + '의 크리티컬 데미지를 주었습니다')
+            } else {
+                alert('thunderbolt가 ' + dmg + '의 데미지를 주었습니다')
+            }
+        }
+
+        function bossheal(dmg) {
+            if (dmg >= 8) {
+                alert('보스의 체력이 ' + dmg + '만큼 크게 회복 되었습니다')
+            } else {
+                alert('보스의 체력이 ' + dmg + '만큼 회복 되었습니다')
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="ground">
+        <div class="gradient-border">
+            <h1 class="h1border">이름 : 오길환</h1>
+            <div id="introgrid">
+                <img src="/static/myimg.jpg" width="200px"  alt="자기소개 이미지">
+                <div id="introduction">
+                    안녕하세요 저는 팀에서 주황색을 맡고 있는 오길환입니다<br>
+                    저는 장범준의 노래하면 다들 떠올리시는 그곳 여수에 살고 있습니다. 여수 밤바다~<br>
+                    코딩은 처음이지만 마음만은 이미 세계 최고입니다.<br>
+                    아직 부족한 게 많고 배워야 할 것이 많지만 끝까지 노력해서<br>
+                    훌륭한 개발자가 되어보겠습니다.<br>
+                    내배캠 4기 파이팅!!!
+                </div>
+            </div>
+            <div id="mbtigrid">
+                <div id="strength">
+                    나만의 장점
+                </div>
+                <div id="mystrength">
+                    열정적이고 활발하며 따뜻한 이미지를 가졌습니다. (힘들고 지칠 때 내게 기대~ )
+                </div>
+                <div id="mystyle">
+                    협업 스타일
+                </div>
+                <div id="teamstyle">
+                    적극적으로 협업에 참여하고 좋은 분위기를 만들기 위해 노력합니다.
+                </div>
+                <div id="mbti">
+                    MBTI : ENFP
+                </div>
+                <div id="mymbti">
+                    따뜻하고 정열적이고 활기가 넘치며 재능이 많고 상상력이 풍부합니다.
+                </div>
+            </div>
+            <div class="snsgrid">
+                <div id="snscomment">
+                    SNS,BLOG 구경하기
+                </div>
+                <div id="btnbolg">
+                        <a href="https://5kiran.tistory.com/" target="_blank" class="btntstory">
+                            <img src="/static/tstoryblog.png"
+                                 alt="티스토리 블로그 이동" style="width: 40px"/>
+                        </a>
+                        <a href="https://blog.naver.com/ssses1" target="_blank" style="margin-left: 10px" class="btntstory">
+                            <img src="/static/naverblog.png"
+                                 alt="네이버 블로그 이동" style="width: 40px"/>
+                        </a>
+                        <a href="https://www.instagram.com/5__kiran/" target="_blank" style="margin-left: 10px" class="btntstory">
+                            <img src="/static/instagram.png"
+                                 alt="인스타그램 이동" style="width: 40px"/>
+                        </a>
+                </div>
+            </div>
+        </div>
+        <div id="boss">
+            <div id="bossbox">
+                <div id="bossHp" style="font-size: 30px">
+                </div>
+                <br>
+                <br>
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣤⣤⣤⣤⣤⣶⣦⣤⣄⡀⠀<br>
+                ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⡿⠛⠉⠙⠛⠛⠛⠛⠻⢿⣿⣷⣤⠀⠀<br>
+                ⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⠋⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⠈⢻⣿⣿⡄⠀⠀<br>
+                ⠀⠀⠀⠀⠀⠀⠀⣸⣿⡏⠀⠀⠀⣠⣶⣾⣿⣿⣿⠿⠿⠿⢿⣿⣿⣿⠀⠀<br>
+                ⠀⠀⠀⠀⠀⠀⠀⣿⣿⠁⠀⠀⢰⣿⣿⣯⠁⠀⠀⠀⠀⠀⠀⠀⠈⠙⢿⣷⡄⠀<br>
+                ⠀⠀⣀⣤⣴⣶⣶⣿⡟⠀⠀⠀⢸⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣷⠀<br>
+                ⠀⢰⣿⡟⠋⠉⣹⣿⡇⠀⠀⠀⠘⣿⣿⣿⣿⣷⣦⣤⣤⣤⣶⣶⣶⣶⣿⣿⣿⠀<br>
+                ⠀⢸⣿⡇⠀⠀⣿⣿⡇⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⠀<br>
+                ⠀⣸⣿⡇⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠉⠻⠿⣿⣿⣿⣿⡿⠿⠿⠛⢻⣿⡇⠀⠀<br>
+                ⠀⣿⣿⠁⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣧⠀⠀<br>
+                ⠀⣿⣿⠀⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⠀⠀<br>
+                ⠀⣿⣿⠀⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⠀⠀<br>
+                ⠀⢿⣿⡆⠀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⠀<br>
+                ⠀⠸⣿⣧⡀⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⠃⠀⠀<br>
+                ⠀⠀⠛⢿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⣰⣿⣿⣷⣶⣶⣶⣶⠶⠀⢠⣿⠀⠀⠀<br>
+                ⠀⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⠀⣽⣿⡏⠁⠀⠀⢸⣿⡇⠀⠀⠀<br>
+                ⠀⠀⠀⠀⠀⠀⠀⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⠀⢹⣿⡆⠀⠀⠀⣸⣿⠇⠀⠀⠀<br>
+                ⠀⠀⠀⠀⠀⠀⠀⢿⣿⣦⣄⣀⣠⣴⣿⣿⠁⠀⠈⠻⣿⣿⣿⣿⡿⠏⠀⠀⠀⠀<br>
+                ⠀⠀⠀⠀⠀⠀⠀⠈⠛⠻⠿⠿⠿⠿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀<br>
+                <br>
+                <br>
+                <div>
+                    아래 버튼을 클릭하여 어몽어스에게 스킬을 사용!!
+                </div>
+                <div id="bossbtn">
+                    <button onclick=skillDmg(icespear) class="ice">icespear</button>
+                    <button onclick=skillDmg(thunderbolt) class="thunder">thunderbolt</button>
+                    <button onclick=skillDmg(fireball) class="fire">fireball</button>
+                    <button onclick=skillheal(bossheal) class="heal">bossheal</button>
+                </div>
+            </div>
+            <div id="bosskill" style="font-size: 40px">
+                🏆명예의 전당🏆
+                <p style="font-size: 20px">이름을 누르면 블로그 및 SNS로 이동합니다</p>
+            </div>
+            <div id="bossloglist">
+            </div>
+        </div>
+        <div class ="guest-border">
+            <div id = "gusetbox">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="name" placeholder="nick"
+                           style="width: 200px">
+                    <label for="name">닉네임</label>
+                    <div class="col-auto">
+                        <label for="pw" class="visually-hidden">비밀번호</label>
+                        <input type="password" class="form-control" id="pw" placeholder="비밀번호">
+                    </div>
+                </div>
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="Leave a comment here" id="comment"
+                              style="height: 105px"></textarea>
+                    <label for="comment">응원을 남겨주세요</label>
+                </div>
+            </div>
+            <button onclick= "save_comment()" type="button" class="btn btn-dark"> 등록하기 </button>
+            <div id="comment-list">
+            </div>
+        </div>
+    </div>
+</body>
+</html>
